@@ -23,4 +23,5 @@ var/
 *.pot
 *.pyc
 __pycache__/
-gmg/settings.py
+rh_vagas/settings.py
+/__pycache__/
