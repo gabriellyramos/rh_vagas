@@ -1,0 +1,60 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
+
+<form class="form-cadastro" action="" method="post">
+{% csrf_token %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" class="form-control" id="nome" name="nome">
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="sobrenome">Sobrenome</label>
+            <input type="text" class="form-control" id="sobrenome" name="sobrenome">
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="nascimento">Data Nascimento</label>
+            <input type="date" class="form-control" id="nascimento" name="nascimento">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" class="form-control" id="telefone" name="telefone">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="sexo">Sexo</label>
+            <select class="form-control" id="sexo" name="sexo">
+            <option selected></option>
+            <option value="0">Não Binário</option>
+            <option value="1">Feminino</option>
+            <option value="2">Masculino</option>
+            </select>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+ <div class="col-md-12">
+    <div class="form-group">
+        <label for="email">Informe o e-mail</label>
+        <input type="email" class="form-control" id="email" name="email">
+    </div>
+</div>
+</div>
+<br />
+<button type="submit" class="btn btn-primary btn-lg btn-block acessar">Cadastrar</button>
+</form>
+{% endblock %}
