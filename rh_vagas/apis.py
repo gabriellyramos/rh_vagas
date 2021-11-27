@@ -1,11 +1,16 @@
 from Pessoa.models import Pessoa
 from Vagas.models import Vagas
-from .serializers import PessoasSerializer, VagasSerializer
+from .serializers import PessoasSerializer, VagasSerializer, UsuarioSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+from django.contrib.auth.models import User
+
+from rh_vagas import serializers
 
 ##### APIs para as pessoas cadastradas #####
 class PessoasView(APIView):
@@ -26,6 +31,24 @@ class PessoasView(APIView):
         serializer = PessoasSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UsuarioView(APIView):
+    
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def post(self, request, format=None):
+        
+        serializer = UsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            user = self.get_object(serializer.data['id'])
+            token, created = Token.objects.get_or_create(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
