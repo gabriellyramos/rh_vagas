@@ -2,15 +2,16 @@
 {% load static %}
 {% block content %}
 
-<form class="formulario">
+<form class="formulario" action="" method="post">
+{% csrf_token %}
     <h2>RH Vagas</h2>
     <div class="form-group">
         <label for="usuario">Usuário</label>
-        <input type="text" class="form-control" id="usuario" aria-describedby="emailHelp">
+        <input type="text" class="form-control" id="usuario" aria-describedby="usuario" name="usuario">
     </div>
     <div class="form-group">
         <label for="senha">Senha</label>
-        <input type="password" class="form-control" id="senha">
+        <input type="password" class="form-control" id="senha" name="senha">
     </div>
     <br />
     <button type="submit" class="btn btn-success btn-lg btn-block acessar">Acessar</button>
@@ -22,6 +23,14 @@
     </div>
     <hr />
     <a href="#">Clique aqui para ver as vagas disponíveis</a>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} m-2" id="msg" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %} 
 
 </form>
 {% endblock %}

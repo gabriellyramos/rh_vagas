@@ -1,0 +1,147 @@
+{% extends "base.html" %} 
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+<p>Bem-vindo(a): {%if pessoa.nome%}{{pessoa.nome}}{%else%}{{request.user}}{%endif%}</p>
+  {% if user.is_staff == False %}
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#curriculo" role="tab" aria-controls="home" aria-selected="true">Currículo</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vagas" role="tab" aria-controls="profile" aria-selected="false">Vagas</a>
+  </li>
+  {% endif %}
+  
+  {% if user.is_staff == True %}
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cadastrarvagas" role="tab" aria-controls="profile" aria-selected="false">Gerenciar Vagas</a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pessoascadastradas" role="tab" aria-controls="profile" aria-selected="false">Pessoas Cadastradas</a>
+  </li>
+  {% endif %}
+
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+  </li>
+  
+</ul>
+<br />
+<div class="tab-content" id="myTabContent">
+{% if user.is_staff == False %}
+  <div class="tab-pane fade show active" id="curriculo" role="tabpanel" aria-labelledby="home-tab">
+   
+   <form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </form>
+  
+  </div>
+  {% endif %}
+
+
+
+
+  <div class="tab-pane fade" id="vagas" role="tabpanel" aria-labelledby="profile-tab">
+  <h2>Vagas</h2>
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Título</th>
+      <th scope="col">Descrição</th>
+      <th scope="col">Requisitos</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for vaga in vagas %}
+    <tr>
+      <td>{{vaga.titulo}}</td>
+      <td>{{vaga.descricao}}</td>
+      <td>{{vaga.requisitos}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+  </div>
+
+
+
+
+
+  <div class="tab-pane fade" id="cadastrarvagas" role="tabpanel" aria-labelledby="profile-tab">
+<form class="form-cadastro" action="" method="post">
+{% csrf_token %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="titulo">Título</label>
+            <input type="text" class="form-control" id="titulo" name="titulo">
+        </div>
+    </div>
+</div>
+<div class="row"> 
+
+<div class="col-md-12">
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="descricao" id="descricao"></textarea>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="requisitos">Requisitos</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="requisitos" id="requisitos"></textarea>
+        </div>
+    </div>
+    
+</div>
+
+<button type="submit" class="btn btn-primary btn-lg btn-block acessar">Cadastrar</button><br /><br />
+<br />
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} m-2" id="msg" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %} 
+</form>
+  </div>
+
+  <div class="tab-pane fade" id="pessoascadastradas" role="tabpanel" aria-labelledby="profile-tab">
+  <h2>Pessoas cadastradas</h2>
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Sobrenome</th>
+      <th scope="col">Data Nascimento</th>
+      <th scope="col">Sexo</th>
+      <th scope="col">Telefone</th>
+      <th scope="col">E-mail</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for pessoa in pessoas %}
+    <tr>
+      <td>{{pessoa.nome}}</td>
+      <td>{{pessoa.sobrenome}}</td>
+      <td>{{pessoa.data_nascimento}}</td>
+      <td>{{pessoa.get_sexo_display}}</td>
+      <td>{{pessoa.telefone}}</td>
+      <td>{{pessoa.email}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+  
+  </div>
+</div>
+{% endblock %}

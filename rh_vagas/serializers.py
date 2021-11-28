@@ -7,14 +7,14 @@ class PessoasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pessoa
-        fields = '__all__'
+        fields = ('id','nome','sobrenome','data_nascimento','sexo','get_sexo_display','telefone','email')
 
 class VagasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vagas
-        fields = '__all__'
+        fields = ('id','titulo','descricao','requisitos','disponivel')
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('id','username','password','is_active')

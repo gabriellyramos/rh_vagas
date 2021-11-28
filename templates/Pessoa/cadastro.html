@@ -55,14 +55,15 @@
 </div>
 </div>
 <br />
-<button type="submit" class="btn btn-primary btn-lg btn-block acessar">Cadastrar</button>
-</form>
-
+<button type="submit" class="btn btn-primary btn-lg btn-block acessar">Cadastrar</button><br /><br />
+<a class="btn btn-warning btn-lg btn-block acessar" href="{% url 'login'%}" role="button">Voltar</a>
+<br />
 {% if messages %}
     {% for message in messages %}
         <div class="alert {{ message.tags }} m-2" id="msg" role="alert">
             {{ message }}
         </div>
     {% endfor %}
-    {% endif %} 
+{% endif %} 
+</form>
 {% endblock %}

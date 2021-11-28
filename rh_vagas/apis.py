@@ -7,7 +7,7 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-
+from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth.models import User
 
 from rh_vagas import serializers
@@ -47,10 +47,22 @@ class UsuarioView(APIView):
         serializer = UsuarioSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            user = self.get_object(serializer.data['id'])
-            token, created = Token.objects.get_or_create(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+
+            user = User.objects.get(username = request.data['username'])
+            serializer = UsuarioSerializer(user, data=request.data)
+            if serializer.is_valid():
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'token': token.key,
+                    'user_id': user.pk,
+                    'username': user.username,
+                    'email': user.email
+                })
 
 ##### APIs para as vagas cadastradas #####
 class VagasView(APIView):
@@ -61,7 +73,7 @@ class VagasView(APIView):
             raise Http404
 
     def get(self, request):
-        queryset = Vagas.objects.all().order_by('id')
+        queryset = Vagas.objects.filter(disponivel=True).order_by('id')
         serializer = VagasSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -72,14 +84,3 @@ class VagasView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class VagasDisponiveisView(APIView):
-    def get_object(self, pk):
-        try:
-            return Vagas.objects.get(pk=pk)
-        except Vagas.DoesNotExist:
-            raise Http404
-
-    def get(self, request):
-        queryset = Vagas.objects.all().order_by('id')
-        serializer = VagasSerializer(queryset, many=True)
-        return Response(serializer.data)
