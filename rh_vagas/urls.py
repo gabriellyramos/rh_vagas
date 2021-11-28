@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .apis import PessoasView, VagasView, UsuarioView, CustomAuthToken
+from .apis import PessoasView, VagasView, UsuarioView, CustomAuthToken, UploadCurriculum, CurriculumPDFView
 from . import views
 from django.conf.urls import include
 
@@ -27,5 +27,7 @@ urlpatterns = [
     path('api/pessoas/', PessoasView.as_view(), name='pessoas'),
     path('api/usuario/', UsuarioView.as_view(), name='usuarios'),
     path('api/vagas/', VagasView.as_view(), name='vagas'),
+    path('api/curriculum/', UploadCurriculum.as_view(), name='curriculums'),
+    path('api/open_curriculum/<int:pk>', CurriculumPDFView.as_view(), name='open_curriculum'),
     path('Pessoa', include(('Pessoa.urls', 'Pessoa'), namespace='Pessoa')),
 ]

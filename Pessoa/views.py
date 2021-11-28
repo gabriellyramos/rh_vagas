@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import render, redirect, reverse
@@ -9,10 +10,15 @@ from django import forms
 from django.core.validators import FileExtensionValidator
 from Vagas.models import Vagas
 from Curriculum.models import Curriculum
+from Pessoa.models import Pessoa
 
 class UploadForm(forms.Form):
     arquivo = forms.FileField(required=False,validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
 
+def handle_uploaded_file(f,nome_arquivo):
+    with open(nome_arquivo, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 def geraUsuario():
     qtde = 8
@@ -61,6 +67,7 @@ def area_restrita(request):
     # Recuperando todas as vagas disponíveis
     vagas = {}
     pessoas = {}
+    curriculos = {}
     
     todas_vagas = requests.get('http://127.0.0.1:8000/api/vagas/')
 
@@ -74,42 +81,55 @@ def area_restrita(request):
     if todas_pessoas.status_code in [200, 201]:
         pessoas = todas_pessoas.json()
 
+    # Recuperando o arquivo pdf do curriculo
+    pessoa = Pessoa.objects.get(usuario = request.user)
+    params = {'pessoa': pessoa.id}
+    
+    file_curriculo = requests.get('http://127.0.0.1:8000/api/curriculum/', params=params)
+    if file_curriculo.status_code in [200, 201]:
+        curriculos = file_curriculo.json()
+
     form = UploadForm()
     pessoa = request.user.pessoa.first()
     
     if request.POST:
+        if request.POST.get("titulo") or request.POST.get("descricao") or request.POST.get("requisitos"): 
+            # Cadastro de vagas
+            titulo = request.POST.get("titulo")
+            descricao = request.POST.get("descricao")
+            requisitos = request.POST.get("requisitos")
 
-        # Cadastro de vagas
-        titulo = request.POST.get("titulo")
-        descricao = request.POST.get("descricao")
-        requisitos = request.POST.get("requisitos")
+            payload = {
+                    'titulo': titulo, 
+                    'descricao': descricao, 
+                    'requisitos': requisitos,
+                    'disponivel': True
+            }
 
-        payload = {
-                'titulo': titulo, 
-                'descricao': descricao, 
-                'requisitos': requisitos,
-                'disponivel': True
-        }
+            cad_vagas = requests.post('http://127.0.0.1:8000/api/vagas/',data=payload)
 
-        cad_vagas = requests.post('http://127.0.0.1:8000/api/vagas/',data=payload)
-
-        if cad_vagas.status_code in [200, 201]:
-            messages.success(request, 'Cadastro realizado com sucesso')
-        else:
-            messages.error(request, 'Ocorreu um erro, verifique se os dados estão corretos e tente novamente!')
+            if cad_vagas.status_code in [200, 201]:
+                messages.success(request, 'Cadastro realizado com sucesso')
+            else:
+                messages.error(request, 'Ocorreu um erro, verifique se os dados estão corretos e tente novamente!')
 
         # Cadastro de curriculo
         if request.FILES:
             arquivo = request.FILES.get('arquivo')
-            form = UploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                Curriculum.objects.get_or_create(pessoa = pessoa, anexo = arquivo.read())
+            handle_uploaded_file(request.FILES['arquivo'],'media/curriculo-{0}'.format(arquivo.name))
+            file = {'file': open('media/curriculo-{0}'.format(arquivo.name), 'rb')}
+            payload = {'pessoa': pessoa.id}
+            cad_curriculum = requests.post('http://127.0.0.1:8000/api/curriculum/',files=file, data=payload)
+            if cad_curriculum.status_code in [200, 201]:
+                messages.success(request, 'Cadastro realizado com sucesso')
+                return redirect(reverse('Pessoa:area_restrita'))
     
     context = {
         'pessoa': pessoa,
         'form': form,
         'user': request.user,
         'vagas': vagas,
-        'pessoas': pessoas
+        'pessoas': pessoas,
+        'curriculos': curriculos
     }
     return render(request, 'Pessoa/area-restrita.html', context)
