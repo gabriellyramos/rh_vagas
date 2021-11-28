@@ -82,12 +82,13 @@ def area_restrita(request):
         pessoas = todas_pessoas.json()
 
     # Recuperando o arquivo pdf do curriculo
-    pessoa = Pessoa.objects.get(usuario = request.user)
-    params = {'pessoa': pessoa.id}
+    pessoa = Pessoa.objects.filter(usuario = request.user)
+    if len(pessoa) > 0:
+        params = {'pessoa': pessoa[0].id}
     
-    file_curriculo = requests.get('http://127.0.0.1:8000/api/curriculum/', params=params)
-    if file_curriculo.status_code in [200, 201]:
-        curriculos = file_curriculo.json()
+        file_curriculo = requests.get('http://127.0.0.1:8000/api/curriculum/', params=params)
+        if file_curriculo.status_code in [200, 201]:
+            curriculos = file_curriculo.json()
 
     form = UploadForm()
     pessoa = request.user.pessoa.first()
