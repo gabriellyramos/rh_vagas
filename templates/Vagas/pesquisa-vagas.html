@@ -1,0 +1,40 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
+
+<form class="form-cadastro" action="" method="post">
+  <h2>Vagas Disponíveis</h2>
+  {% csrf_token %}
+  <div class="row">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="titulo">Titulo</label>
+              <input type="text" class="form-control" id="titulo" name="titulo">
+          </div>
+      </div>
+  </div>
+  <br />
+  
+  <button type="submit" class="btn btn-primary btn-lg btn-block acessar">Pesquisar</button><br /><br />
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Título</th>
+        <th scope="col">Descrição</th>
+        <th scope="col">Requisitos</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for vaga in vagas %}
+      <tr>
+        <td>{{vaga.titulo}}</td>
+        <td>{{vaga.descricao}}</td>
+        <td>{{vaga.requisitos}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+ 
+  </form>
+{% endblock %}

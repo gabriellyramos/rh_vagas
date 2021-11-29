@@ -79,7 +79,10 @@ class VagasView(APIView):
             raise Http404
 
     def get(self, request):
-        queryset = Vagas.objects.filter(disponivel=True).order_by('id')
+        if request.GET:
+            queryset = Vagas.objects.filter(titulo__contains=request.GET['titulo']).order_by('id')
+        else:
+            queryset = Vagas.objects.filter(disponivel=True).order_by('id')
         serializer = VagasSerializer(queryset, many=True)
         return Response(serializer.data)
 

@@ -22,7 +22,7 @@
     <a class="btn btn-primary btn-lg btn-block acessar" href="{% url 'Pessoa:cadastro'%}" role="button">Cadastre-se</a>
     </div>
     <hr />
-    <a href="#">Clique aqui para ver as vagas disponíveis</a>
+    <a href="{% url 'Vagas:pesquisa_vagas' %}">Clique aqui para ver as vagas disponíveis</a>
 
     {% if messages %}
     {% for message in messages %}

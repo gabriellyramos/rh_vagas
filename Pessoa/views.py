@@ -110,7 +110,8 @@ def area_restrita(request):
             cad_vagas = requests.post('http://127.0.0.1:8000/api/vagas/',data=payload)
 
             if cad_vagas.status_code in [200, 201]:
-                messages.success(request, 'Cadastro realizado com sucesso')
+                return redirect(reverse('Pessoa:area_restrita'))
+                #messages.success(request, 'Cadastro realizado com sucesso')
             else:
                 messages.error(request, 'Ocorreu um erro, verifique se os dados estão corretos e tente novamente!')
 

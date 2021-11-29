@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/curriculum/', UploadCurriculum.as_view(), name='curriculums'),
     path('api/open_curriculum/<int:pk>', CurriculumPDFView.as_view(), name='open_curriculum'),
     path('Pessoa', include(('Pessoa.urls', 'Pessoa'), namespace='Pessoa')),
+    path('Vagas', include(('Vagas.urls', 'Pessoa'), namespace='Vagas')),
 ]
