@@ -62,7 +62,7 @@ def cadastro(request):
     context = {}
     return render(request, 'Pessoa/cadastro.html', context)
 
-# @login_required
+@login_required
 def area_restrita(request):
     # Recuperando todas as vagas disponíveis
     vagas = {}
