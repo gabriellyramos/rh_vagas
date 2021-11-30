@@ -22,3 +22,5 @@ python manage.py migrate
 ### Acesse com o usuário já criado nas migrações:
 - user: administrador
 - pwd: sovocesabe
+
+Obs: Após realizar todo o processo, crie uma pasta chamada media na raiz do projeto.
