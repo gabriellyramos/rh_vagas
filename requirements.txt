@@ -3,5 +3,5 @@ psycopg2>=2.8
 djangorestframework
 djangorestframework-jwt
 djangorestframework-simplejwt
-request
+requests
 django-crispy-forms
