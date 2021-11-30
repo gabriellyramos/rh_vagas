@@ -16,3 +16,9 @@ Em seguida adicionar as migrações com o comando:
 ```sh
 python manage.py migrate
 ```
+### Após realizar as migrações, acesse em seu navegador o seguinte caminho: 
+- 127.0.0.1:8000
+
+### Acesse com o usuário já criado nas migrações:
+- user: administrador
+- pwd: sovocesabe
