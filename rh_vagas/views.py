@@ -14,10 +14,13 @@ def login(request):
         payload = {'username': usuario, 'password': senha}
         
         token = requests.post('http://127.0.0.1:8000/api/token/',data=payload)
-        user_get = User.objects.get(username = usuario)
-        user_get.set_password(senha)
-        user_get.save()
-
+        user_get = User.objects.filter(username = usuario)
+        if len(user_get) > 0:
+            user_get = user_get[0]
+            user_get.set_password(senha)
+            user_get.save()
+        else:
+            messages.error(request, 'Erro ao acessar, verifique se os dados estão corretos e tente novamente!')
         if token.status_code in [200, 201]:
             user = authenticate(request, username=usuario, password=senha)
             logar(request, user)
