@@ -4,4 +4,4 @@ djangorestframework
 djangorestframework-jwt
 djangorestframework-simplejwt
 request
-crispy_forms
+django-crispy-forms
